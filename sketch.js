@@ -24,6 +24,11 @@ let earSize = 70;
 
 let showVideo = false;
 
+let closeButton;
+let infoHtml;
+let hideInfoHtml = false;
+let camToggle;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   blendMode(MULTIPLY)
@@ -53,6 +58,9 @@ function setup() {
   // Hide the video element, and just show the canvas
   video.addClass('video')
   video.addClass('hide');
+  infoHtml = select('#info-inner');
+  closeButton = select('#close');
+  camToggle = select('#cam-toggle');
 }
 
 function modelReady() {
@@ -126,7 +134,7 @@ function showBits(keypoints) {
         } else {
           // ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
         }
-        scale = dist(leftEye[0], leftEye[1], rightEye[0], rightEye[1])/baseScale
+        scale = dist(leftEye[0], leftEye[1], rightEye[0], rightEye[1])/baseScale;
         // console.log(scale)
       }
     }
@@ -171,13 +179,37 @@ function windowResized() {
   video.size(width, height);
 }
 
-function mousePressed(){
+// function mousePressed(){
+//   if(showVideo){
+//     video.removeClass('show');
+//     video.addClass('hide')
+//   }else{
+//     video.addClass('show');
+//     video.removeClass('hide')
+//   }
+//   showVideo = !showVideo;
+// }
+
+function hideInfo(){
+  if (hideInfoHtml) {
+    infoHtml.removeClass('hidden');
+    closeButton.html('X Close');
+  } else {
+    infoHtml.addClass('hidden');
+    closeButton.html('info');
+  } 
+  hideInfoHtml = !hideInfoHtml;
+}
+
+function toggleCam() {
   if(showVideo){
     video.removeClass('show');
     video.addClass('hide')
+    camToggle.removeClass('active')
   }else{
     video.addClass('show');
     video.removeClass('hide')
+    camToggle.addClass('active')
   }
   showVideo = !showVideo;
 }
