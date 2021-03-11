@@ -12,7 +12,7 @@ let video;
 let poseNet;
 let poses = [];
 let log = true;
-let nose=[];
+let nose = [];
 let rightEye = [];
 let leftEye = [];
 let baseScale = 80;
@@ -26,7 +26,7 @@ let showVideo = false;
 
 let closeButton;
 let infoHtml;
-let hideInfoHtml = false;
+let hideInfoHtml = true;
 let camToggle;
 
 function setup() {
@@ -34,17 +34,12 @@ function setup() {
   blendMode(MULTIPLY)
   pixelDensity(1);
   video = createCapture({
-      audio: false,
-      video: {
-        facingMode: "user",
-        frameRate: 10
-      }
-    },
-    function() {
-      // videoLoaded = true;
-      // console.log('capture ready.')
+    audio: false,
+    video: {
+      facingMode: "user",
+      frameRate: 10
     }
-  );
+  });
   video.size(width, height);
   // video.elt.setAttribute("playsinline", "");
   frameRate(17);
@@ -69,24 +64,16 @@ function modelReady() {
 
 function draw() {
   clear();
-  // image(video, 0, 0, width, height);
-
-  // We can call both functions to draw all keypoints and the skeletons
-  // drawKeypoints();
-  // drawSkeleton();
-  if(poses[0])showBits(poses[0].pose.keypoints)
-  
-  if (poses.length > 0 && log) {
-    console.log(poses[0].pose.keypoints);
-    log = false;
-  }
+  showMirror()
 }
 
-function showBits(keypoints) {
-
-    for (let i = 0; i < 5; i++) {
+function showMirror() {
+  for (let i = 0; i < poses.length; i++) {
+    // For each pose detected, loop through all the keypoints
+    let pose = poses[i].pose;
+    for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-      let keypoint = keypoints[i];
+      let keypoint = pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.1) {
         fill(255, 0, 0);
@@ -95,22 +82,22 @@ function showBits(keypoints) {
           nose = [keypoint.position.x, keypoint.position.y];
           push()
           translate(nose[0], nose[1]);
-          fill(255,0, 255)
-          triangle(0, -noseSize*scale, -noseSize*scale, noseSize*scale, noseSize*scale, noseSize*scale);
-          rect(-noseSize*scale, noseSize*scale-0.5, noseSize*2*scale, 2000*scale)
+          fill(255, 0, 255)
+          triangle(0, -noseSize * scale, -noseSize * scale, noseSize * scale, noseSize * scale, noseSize * scale);
+          rect(-noseSize * scale, noseSize * scale - 0.5, noseSize * 2 * scale, 2000 * scale)
           pop()
         } else if (keypoint.part === "rightEye") {
           rightEye = [keypoint.position.x, keypoint.position.y];
           noFill()
           stroke(0, 255, 255)
-          strokeWeight(20*scale)
-          circle(rightEye[0], rightEye[1], eyeSize*scale);
+          strokeWeight(20 * scale)
+          circle(rightEye[0], rightEye[1], eyeSize * scale);
         } else if (keypoint.part === "leftEye") {
           leftEye = [keypoint.position.x, keypoint.position.y];
           noFill()
           stroke(0, 255, 255)
-          strokeWeight(20*scale)
-          circle(leftEye[0], leftEye[1], eyeSize*scale);
+          strokeWeight(20 * scale)
+          circle(leftEye[0], leftEye[1], eyeSize * scale);
         } else if (keypoint.part === "rightEar") {
           push()
           translate(keypoint.position.x, keypoint.position.y);
@@ -119,7 +106,7 @@ function showBits(keypoints) {
           stroke(255, 255, 0)
           noStroke();
           strokeWeight(5)
-          rect(-2000*scale, -(earSize/2)*scale, (2000+earSize/4)*scale, earSize*scale);
+          rect(-2000 * scale, -(earSize / 2) * scale, (2000 + earSize / 4) * scale, earSize * scale);
           pop()
         } else if (keypoint.part === "leftEar") {
           push()
@@ -129,15 +116,17 @@ function showBits(keypoints) {
           stroke(255, 255, 0)
           noStroke();
           strokeWeight(5)
-          rect(-earSize/4, -(earSize/2)*scale, 2000*scale, earSize*scale);
+          rect(-earSize / 4, -(earSize / 2) * scale, 2000 * scale, earSize * scale);
           pop()
         } else {
-          // ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
+
         }
-        scale = dist(leftEye[0], leftEye[1], rightEye[0], rightEye[1])/baseScale;
-        // console.log(scale)
+        if (leftEye.length === 2 && rightEye.length === 2) {
+          scale = dist(leftEye[0], leftEye[1], rightEye[0], rightEye[1]) / baseScale;
+        }
       }
     }
+  }
 }
 
 // A function to draw ellipses over the detected keypoints
@@ -190,23 +179,23 @@ function windowResized() {
 //   showVideo = !showVideo;
 // }
 
-function hideInfo(){
+function hideInfo() {
   if (hideInfoHtml) {
     infoHtml.removeClass('hidden');
-    closeButton.html('X Close');
+    closeButton.html('X close');
   } else {
     infoHtml.addClass('hidden');
     closeButton.html('info');
-  } 
+  }
   hideInfoHtml = !hideInfoHtml;
 }
 
 function toggleCam() {
-  if(showVideo){
+  if (showVideo) {
     video.removeClass('show');
     video.addClass('hide')
     camToggle.removeClass('active')
-  }else{
+  } else {
     video.addClass('show');
     video.removeClass('hide')
     camToggle.addClass('active')
