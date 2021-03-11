@@ -29,6 +29,7 @@ canvas {
   /* Firefox */
   object-fit: cover;
   z-index: -1;
+  filter: grayscale(100%);
 }
 
 .show {
