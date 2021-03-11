@@ -31,7 +31,8 @@ function setup() {
   video = createCapture({
       audio: false,
       video: {
-        facingMode: "user"
+        facingMode: "user",
+        frameRate: 15
       }
     },
     function() {
