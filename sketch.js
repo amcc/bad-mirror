@@ -32,7 +32,7 @@ function setup() {
       audio: false,
       video: {
         facingMode: "user",
-        frameRate: 15
+        frameRate: 10
       }
     },
     function() {
