@@ -2,7 +2,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   font-family: 'IBM Plex Mono', monospace;
@@ -12,25 +13,33 @@ html, body {
 canvas {
   position: absolute;
   z-index: 2;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  /* Safari and Chrome */
+  -moz-transform: rotateY(180deg);
+  /* Firefox */
 }
 
 .video {
   position: absolute;
   top: 0;
-  
-/*   width: 10px;
-  height: 10px; */
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  /* Safari and Chrome */
+  -moz-transform: rotateY(180deg);
+  /* Firefox */
   object-fit: cover;
   z-index: -1;
-/*   visibility: hidden; */
 }
+
 .show {
   right: 0;
 }
+
 .hide {
   right: 100vw;
 }
 
 * {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
